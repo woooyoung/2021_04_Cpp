@@ -1,1 +1,3 @@
-﻿  Macro.vcxproj -> C:\Users\Main-PC\source\repos\Macro\Debug\Macro.exe
+﻿  Macro.cpp
+Macro.obj : error LNK2005: _main already defined in EXECUTE_NUM.obj
+C:\Users\Main-PC\source\repos\Macro\Debug\Macro.exe : fatal error LNK1169: one or more multiply defined symbols found
