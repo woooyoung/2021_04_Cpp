@@ -42,6 +42,23 @@ int main() {
         }
         else if (input == 3) {
             //사원 삭제
+            int number = getInt("사원번호를 입력해주세요 \n");
+            int deletedIndex = -1;
+
+            for (int i = 0; i < count; i++) {
+                if (number == employee[i]->no) {    //삭제가 된다면
+                    delete employee[i];             //deletedIndex는 해당 인덱스
+                    deletedIndex = i;
+                    break;
+                }
+            }
+            if (deletedIndex >= 0) {    //위에서 정말로 삭제가 되었단 뜻이므로
+                for (int i = deletedIndex; i < count - 1; i++) {
+                    employee[i] = employee[i + 1];
+                }           //인덱스 한칸씩 땡겨오기
+            }
+            count--;
+            printf("삭제가 완료되었습니다.");
         }
         else if (input == 4) {
             //프로그램 종료
@@ -58,7 +75,7 @@ int main() {
     return 0;
 }
 
-int getInt(const char* prompt) {
+int getInt(const char* prompt) {    //정수받아오기
     int input;
     printf("%s", prompt);
     fseek(stdin, 0, SEEK_END);
@@ -66,7 +83,7 @@ int getInt(const char* prompt) {
     return input;
 }
 
-char* getString(const char* prompt) {
+char* getString(const char* prompt) { //문자열받아오기
     char* input = new char[100];
     printf("%s", prompt);
     fseek(stdin, 0, SEEK_END);
