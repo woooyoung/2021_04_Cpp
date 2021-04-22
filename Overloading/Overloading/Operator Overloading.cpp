@@ -1,59 +1,41 @@
-//오버로딩(overloading) : 동일한 이름을 갖고있지만 다른동작을 하게 만드는 것
-#define _CRT_SECURE_NO_WARNINGS
+//연산자 오버로딩      +,-,*,/  기본 자료형에만 유효
 #include <cstdio>
-#include <cstring>
 
-
-
-/*
-int sum(int a, int b) {
-   printf("sum(int,int)");
-   return a+b;
-}
-
-int sum(int a, int b,int c) {
-   printf("sum(int,int,int)");
-   return a+b+c;
-}
-
-float sum(int a, float b) {
-   printf("sum(int,float)");
-   return a + b;
-}
-*/
-class Student {   //클래스 내부에서도 동일하게 적용
+class Vector {
 public:
-    int student_no;
-    char student_name[100];
+    float X;
+    float Y;
 
-    Student() { // 함수취급
-        student_no = 0;
-        strcpy(student_name, "홍길동");
+    Vector(float X, float Y) {
+        this->X = X;
+        this->Y = Y;
     }
 
-    Student(int studentNo, const char* student_name) {
-        this->student_no = studentNo;
-        strcpy(this->student_name, student_name);
+    Vector() {
+        X = 0.0f;
+        Y = 0.0f;
     }
 
     void printInfo() {
-        printf("%s 학생의 번호 : %d\n", student_name, student_no);
+        printf("%.2f, %.2f", X, Y);
     }
-
 };
 
+Vector operator+(Vector& v1, Vector& v2) {
+    return Vector(v1.X + v2.X, v1.Y + v2.Y);
+}
+
 int main() {
+    Vector v1 = Vector(100, 200);
+    Vector v2 = Vector(1, 2);
 
-    Student* s1 = new Student();
-    Student* s2 = new Student(10, "홍길순");
-    s1->printInfo();
-    s2->printInfo();
-    //   int v1 = 10;
-    //   float v1 = 20;
-    //   sum(100, 200);
-    //   sum(1, 2, 3);
-    //   sum(1, 1.0f);
 
+    Vector v3 = v1 + v2;
+
+    v3.printInfo();      //정적으로 할당된 클래스 인스턴스에서 동작한다.
 
     return 0;
 }
+
+//c++에는 연산자 오버로딩이 가능하고 이걸 활용하는 오픈소스 라이브러리가 많다
+//또는 게임 엔진이 많다. 갖다 쓰면 된다.
