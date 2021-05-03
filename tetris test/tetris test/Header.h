@@ -32,6 +32,12 @@ public:
 
 class GameEngine {
 public:
+    enum class GameState {
+        PLAYING,GAMEOVER
+    };
+
+    GameState state = GameState::PLAYING;
+
     int gameGridData[GRID_HEIGHT][GRID_WIDTH] = {
         {0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0},
@@ -44,11 +50,8 @@ public:
         {1,1,1,0,0,0,0},
         {1,1,1,1,0,0,0},
     };
-    int userBlock[USERBLOCK_SIZE][USERBLOCK_SIZE] = {
-        {0, 1, 0},
-        {0, 1, 0},
-        {0, 1, 0}
-    };
+    int userBlock[USERBLOCK_SIZE][USERBLOCK_SIZE] = { 0, };
+
 
     int userBlockVarious[3][USERBLOCK_SIZE][USERBLOCK_SIZE] = {
         {
@@ -66,7 +69,7 @@ public:
             {0,1,0},
             {1,1,0}
         },
-
+        
     };
     int blockX = 0;      //유저블록의 현재 위치를 기억할 변수
     int blockY = 0;
@@ -76,9 +79,12 @@ public:
 
     void init() {
         //최초에 게임 엔진을 초기화 하는 과정을 맡는다.
+        makeUserBlock();
     }
     void next(float dt, char keyboardInput) {
-        // blockY++;
+       // blockY++;
+
+        if (state == GameState::GAMEOVER) return;
         elapsed = elapsed + dt;      //elapsed += dt
         if (elapsed >= 0.5f) {
             if (canGoDown()) {
@@ -87,8 +93,9 @@ public:
             else {
                 //더 내려갈수 없으면 userBlock을 gameGridData에 전사
                 trans();
+                if (gameOverDecision()) state = GameState::GAMEOVER;
             }
-
+            
             elapsed = elapsed - 0.5f;   //elapsed -= dt;
         }
 
@@ -99,7 +106,7 @@ public:
             controlCheck = 0.0f;
         }
         if (keyboardInput == 'd' && canGoRight() && controlCheck > 0.1) {
-            blockX++;
+            blockX++; 
             controlCheck = 0.0f;
         }
         if (keyboardInput == 's' && canGoDown() && controlCheck > 0.1) {
@@ -139,7 +146,7 @@ public:
     bool canGoRight() {
         for (int i = 0; i < USERBLOCK_SIZE; i++) {
             for (int k = 0; k < USERBLOCK_SIZE; k++) {
-                if (userBlock[i][k] == 1 && k + blockX + 1 > GRID_WIDTH - 1) {
+                if (userBlock[i][k] == 1 && k + blockX + 1 > GRID_WIDTH -1) {
                     return false;
                 }
                 if (userBlock[i][k] == 1 && gameGridData[i + blockY][k + blockX + 1]) {
@@ -183,10 +190,21 @@ public:
                 eraseLine(i);
                 drop(i);
             }
-        }
+         }
 
         //새로운 블록 생성
         makeUserBlock();
+    }
+
+    bool gameOverDecision() {
+        for (int i = 0; i < USERBLOCK_SIZE; i++) {
+            for (int k = 0; k < USERBLOCK_SIZE; k++) {
+                if (userBlock[i][k] == 1 && gameGridData[i + blockY][k + blockX] == 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     void makeUserBlock() {
@@ -194,7 +212,7 @@ public:
         blockY = 0;
 
         //랜덤을 통해서 새로운 블록을 만든다.
-        srand(time(0));
+        //srand(time(0));
 
         int various = rand() % 3;
         for (int i = 0; i < USERBLOCK_SIZE; i++) {
@@ -203,6 +221,10 @@ public:
             }
         }
 
+    }
+
+    void rotate() {
+        //TODO : 회전 구현하기
     }
 
     //실제 게임 데이터를 화면에 출력할 수 있는 데이터로 바꿔주는 함수
@@ -223,8 +245,8 @@ public:
                 }
                 else {
                     displayData[i + blockY][k + blockX] = userBlock[i][k] == 1 ? userBlock[i][k] : displayData[i + blockY][k + blockX];
-
-
+                    
+                    
                     //int _x = k + blockX;
                     //int _y = i + blockY;
 
