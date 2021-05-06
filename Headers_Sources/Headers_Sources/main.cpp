@@ -1,4 +1,6 @@
 //c++ 프로그램은 무조건 cpp파일 기준으로 만들어진다.
+//클래스의 선언과 파일의 이름은 같지 않아도 된다.
+//여러개의 헤더파일에 중복적용이 되어있어도 상관없다. 하지만 main.cpp에서는 중복되면 안된다.
 #include "main_header.h"
 #include "Animal.h"
 #include "Person.h"
